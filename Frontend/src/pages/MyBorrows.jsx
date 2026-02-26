@@ -83,6 +83,23 @@ export default function MyBorrows() {
     return diffDays;
   };
 
+  const getRunningFine = (borrow) => {
+    // Already returned — show actual fine from DB
+    if (borrow.status === "returned") return borrow.total_fine || 0;
+
+    // Fine rate is 0 (faculty) — no fine
+    if (!borrow.fine_rate || borrow.fine_rate <= 0) return 0;
+
+    const today = new Date();
+    const dueDate = new Date(borrow.return_date);
+
+    // Not yet overdue
+    if (today <= dueDate) return 0;
+
+    const overdueDays = Math.ceil((today - dueDate) / (1000 * 60 * 60 * 24));
+    return overdueDays * borrow.fine_rate;
+};
+
   // Show loading spinner while checking authentication
   if (authLoading || loading) {
     return (
@@ -270,13 +287,26 @@ export default function MyBorrows() {
                         {getStatusBadge(borrow.status, borrow.return_date)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {borrow.total_fine > 0 ? (
-                          <span className="text-red-600 font-medium">
-                            {borrow.total_fine} Taka
-                          </span>
-                        ) : (
-                          "-"
-                        )}
+                        {(() => {
+                          const runningFine = getRunningFine(borrow);
+                          const isEstimate = borrow.status !== "returned" && runningFine > 0;
+
+                          if (runningFine > 0) {
+                            return (
+                              <div>
+                                <span className="text-red-600 font-medium">
+                                  {runningFine} Taka
+                                </span>
+                                {isEstimate && (
+                                  <div className="text-xs text-orange-500 mt-0.5">
+                                    ⚠ Accumulating daily
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          }
+                          return <span className="text-gray-400">-</span>;
+                        })()}
                       </td>
                     </tr>
                   );
@@ -343,9 +373,9 @@ export default function MyBorrows() {
           </div>
           <div className="bg-yellow-50 p-4 rounded-lg">
             <div className="text-2xl font-bold text-yellow-600">
-              {borrows
-                .reduce((sum, b) => sum + parseFloat(b.total_fine || 0), 0)
-                .toFixed(2)}{" "}
+              {Number(
+                borrows.reduce((sum, b) => sum + Number(getRunningFine(b) || 0), 0)
+              ).toFixed(2)}{" "}
               Taka
             </div>
             <div className="text-sm text-yellow-800">Total Fines</div>
