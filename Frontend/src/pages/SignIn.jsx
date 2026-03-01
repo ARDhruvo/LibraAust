@@ -90,6 +90,15 @@ const SignIn = () => {
           )}
         </Formik>
 
+        <div className="text-right">
+          <Link
+            to="/forgot-password"
+            className="text-sm text-blue-600 hover:text-blue-700 font-semibold"
+          >
+            Forgot Password?
+          </Link>
+        </div>
+
         <div className="text-center mt-6">
           <p className="text-gray-600">
             Don't have an account?{" "}

@@ -22,6 +22,9 @@ import ProfilePage from "./pages/ProfilePage.jsx";
 import MyBorrows from "./pages/MyBorrows.jsx";
 import ManageBorrows from "./pages/ManageBorrows.jsx";
 import { Import } from "lucide-react";
+import ForgotPassword from "./pages/ForgotPassword";
+import VerifyOtp from "./pages/VerifyOtp";
+import ResetPassword from "./pages/ResetPassword";
 
 export default function App() {
   return (
@@ -33,15 +36,18 @@ export default function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
 
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/verify-otp" element={<VerifyOtp />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+
         {/* Public routes */}
         <Route path="/resources/books" element={<Books />} />
         <Route path="/resources/thesis" element={<Thesis />} />
         <Route path="/about/kfr" element={<AboutKFR />} />
-        <Route path="/about/rules" element={<RulesAndRegulations/>}></Route>
+        <Route path="/about/rules" element={<RulesAndRegulations />}></Route>
         <Route path="/books/:id" element={<BookDetails />} />
         <Route path="/thesis/:id" element={<ThesisDetail />} />
         <Route path="/contact" element={<Contact />} />
-
 
         {/* Protected routes - require authentication */}
         <Route
@@ -78,7 +84,6 @@ export default function App() {
         />
         <Route path="/my-borrows" element={<MyBorrows />} />
         <Route path="/manage-borrows" element={<ManageBorrows />} />
-
       </Routes>
 
       <Toaster

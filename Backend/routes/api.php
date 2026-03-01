@@ -125,3 +125,8 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::get('/test', TestController::class);
+
+// Public routes for password reset
+Route::post('/forgot-password/send-otp', [App\Http\Controllers\Api\ForgotPasswordController::class, 'sendOtp']);
+Route::post('/forgot-password/verify-otp', [App\Http\Controllers\Api\ForgotPasswordController::class, 'verifyOtp']);
+Route::post('/forgot-password/reset', [App\Http\Controllers\Api\ForgotPasswordController::class, 'resetPassword']);
